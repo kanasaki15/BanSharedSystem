@@ -1,0 +1,7 @@
+name: BanSharedSystem
+version: @version@
+main: xyz.n7mn.dev.bansharedsystem.BanSharedSystem
+api-version: 1.15
+authors: [n3m_]
+description: Ban ShareSystem
+website: https://n7mn.xyz/
