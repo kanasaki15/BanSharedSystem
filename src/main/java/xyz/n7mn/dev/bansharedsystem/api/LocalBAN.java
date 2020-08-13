@@ -74,6 +74,7 @@ public class LocalBAN implements BANInterface {
         }
     }
 
+    @Override
     public boolean run(UUID targetPlayer, UUID fromPlayer, String reason, Date expirationDate, boolean isBan){
         if (authData == null){
             return false;
@@ -125,5 +126,15 @@ public class LocalBAN implements BANInterface {
             // e.printStackTrace();
             return false;
         }
+    }
+
+    @Override
+    public boolean ban(UUID fromPlayer, UUID targetPlayer, String reason, Date expirationDate) {
+        return run(targetPlayer, fromPlayer, reason, expirationDate, true);
+    }
+
+    @Override
+    public boolean unban(UUID fromPlayer, UUID targetPlayer, String reason, Date expirationDate) {
+        return run(targetPlayer, fromPlayer, reason, expirationDate, false);
     }
 }

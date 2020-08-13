@@ -149,4 +149,14 @@ public class ShareBAN implements BANInterface {
             return false;
         }
     }
+
+    @Override
+    public boolean ban(UUID fromPlayer, UUID targetPlayer, String reason, Date expirationDate) {
+        return run(targetPlayer, fromPlayer, reason, expirationDate, true);
+    }
+
+    @Override
+    public boolean unban(UUID fromPlayer, UUID targetPlayer, String reason, Date expirationDate) {
+        return run(targetPlayer, fromPlayer, reason, expirationDate, false);
+    }
 }
