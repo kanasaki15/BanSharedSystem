@@ -3,7 +3,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 apply plugin: 'java'
 
 group = 'xyz.n7mn.dev'
-version = '1.0'
+version = '0.1-alpha'
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
@@ -27,5 +27,13 @@ dependencies {
 processResources {
     from(sourceSets.main.resources.srcDirs) {
         filter ReplaceTokens, tokens: [version: version]
+    }
+}
+
+jar{
+    from {
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
     }
 }

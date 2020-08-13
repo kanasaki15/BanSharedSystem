@@ -1,8 +1,10 @@
 package xyz.n7mn.dev.bansharedsystem.api;
 
-public interface BANInterface {
+import org.bukkit.entity.Player;
 
-    void init();
-    void run();
-    void close();
+interface BANInterface {
+
+    void init(AuthData data);
+
+    boolean run(Player fromPlayer, Player targetPlayer, String reason);
 }
