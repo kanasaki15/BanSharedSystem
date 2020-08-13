@@ -7,6 +7,10 @@ public class Auth {
     private String code = null;
     private AuthData auth = null;
 
+    public Auth(){
+
+    }
+
     public Auth(String code, AuthData data){
         this.code = code;
         this.auth = data;
@@ -14,7 +18,7 @@ public class Auth {
 
     public String getCode(String ServerName){
         if (code == null){
-            code = new Http().get(APIURL.BaseURL+APIURL.Version+APIURL.GetAuthCode+ServerName);
+            code = new Http().get(APIURL.BaseURL+APIURL.Version+APIURL.GetAuthCode+ServerName+"&lib="+new SystemInfo().getUseLibVer());
             return code;
         }else{
             return code;
@@ -27,7 +31,7 @@ public class Auth {
         if (auth != null){
             return auth;
         } else {
-            String s = new Http().get(APIURL.BaseURL+APIURL.Version+APIURL.GetAuthData+Code);
+            String s = new Http().get(APIURL.BaseURL+APIURL.Version+APIURL.GetAuthData+Code+"&lib="+new SystemInfo().getUseLibVer());
             auth = new Gson().fromJson(s, AuthData.class);
             return auth;
         }

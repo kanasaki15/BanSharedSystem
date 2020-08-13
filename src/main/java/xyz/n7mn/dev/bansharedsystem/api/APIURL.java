@@ -8,5 +8,9 @@ public class APIURL {
     static final String GetAuthCode = "/create.php?name=";
     static final String GetAuthData = "/create.php?code=";
 
+    static final String BanShareAdd    = "/ban.php?add=";
+    static final String BanShareRemove = "/ban.php?del=";
 
+    public static final String APIServerIPv4 = "139.162.102.164";
+    public static final String APIServerIPv6 = "2400:8902::f03c:92ff:fe7a:f18b";
 }
