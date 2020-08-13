@@ -8,13 +8,14 @@ import java.util.Base64;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import xyz.n7mn.dev.bansharedsystem.event.BanExecuteEvent;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.zip.GZIPOutputStream;
+import java.util.UUID;
 
 public class ShareBAN implements BANInterface {
 
@@ -58,7 +59,7 @@ public class ShareBAN implements BANInterface {
 
                 byte[] encode = Base64.getEncoder().encode(new Gson().toJson(banShareJson).getBytes(StandardCharsets.UTF_8));
 
-                boolean json = json = new Gson().fromJson(new Http().get(APIURL.BaseURL + APIURL.Version + APIURL.BanShareAdd + URLEncoder.encode(new String(encode), "UTF-8")), boolean.class);
+                boolean json = new Gson().fromJson(new Http().get(APIURL.BaseURL + APIURL.Version + APIURL.BanShareAdd + URLEncoder.encode(new String(encode), "UTF-8")), boolean.class);
 
                 if (!json){
                     Bukkit.getServer().getBanList(BanList.Type.NAME).pardon(targetPlayer.getName());
@@ -72,5 +73,60 @@ public class ShareBAN implements BANInterface {
         }
 
         return false;
+    }
+
+    public boolean run(UUID targetPlayer, UUID fromPlayer, String reason, Date expirationDate, boolean isBan){
+
+        if (authData == null){
+            return false;
+        }
+
+        Date maxDate = new Date();
+        try {
+            maxDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse("9999-12-31 23:59:59");
+        } catch (ParseException e) {
+            // e.printStackTrace();
+        }
+
+        if (expirationDate.getTime() <= new Date().getTime()){
+            return false;
+        }
+
+        if (expirationDate.getTime() >= maxDate.getTime()){
+            expirationDate = null;
+        }
+
+
+        BanExecuteEvent event = new BanExecuteEvent(fromPlayer, targetPlayer, reason, expirationDate, "ShareBan", isBan);
+        Bukkit.getPluginManager().callEvent(event);
+
+        if (event.isCancelled()){
+            return false;
+        }
+
+        try {
+
+            if (isBan){
+                String format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(expirationDate);
+                BanShareJson banShareJson;
+                if (fromPlayer != null){
+                    Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(new Function().UUID2UserName(targetPlayer), reason, expirationDate, new Function().UUID2UserName(fromPlayer));
+                    banShareJson = new BanShareJson(authData.getServerUUID(), targetPlayer, reason, format, fromPlayer);
+                } else {
+                    Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(new Function().UUID2UserName(targetPlayer), reason, expirationDate, "console");
+                    banShareJson = new BanShareJson(authData.getServerUUID(), targetPlayer, reason, format, null);
+                }
+
+                byte[] encode = Base64.getEncoder().encode(new Gson().toJson(banShareJson).getBytes(StandardCharsets.UTF_8));
+                return new Gson().fromJson(new Http().get(APIURL.BaseURL + APIURL.Version + APIURL.BanShareAdd + URLEncoder.encode(new String(encode), "UTF-8")), boolean.class);
+            } else {
+                Bukkit.getServer().getBanList(BanList.Type.NAME).pardon(new Function().UUID2UserName(targetPlayer));
+                return new Gson().fromJson(new Http().get(APIURL.BaseURL + APIURL.Version + APIURL.BanShareRemove + URLEncoder.encode(fromPlayer.toString(),"UTF-8")+"&s_uuid="+URLEncoder.encode(authData.getServerUUID().toString(), "UTF-8")), boolean.class);
+            }
+
+        } catch (Exception e) {
+            // e.printStackTrace();
+            return false;
+        }
     }
 }
