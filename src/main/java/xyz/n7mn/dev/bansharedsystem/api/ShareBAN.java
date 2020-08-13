@@ -37,6 +37,10 @@ public class ShareBAN implements BANInterface {
 
     public boolean run(Player fromPlayer, Player targetPlayer, String reason, Date expirationDate, boolean isBan){
 
+        if (authData == null){
+            return false;
+        }
+
         try {
             if (isBan){
 
@@ -45,7 +49,7 @@ public class ShareBAN implements BANInterface {
                 }
 
                 String format = new SimpleDateFormat("yyyy-MM-dd hh:ii:ss").format(expirationDate);
-                String str = Base64.getEncoder().encode(new Gson().toJson(new BanShareJson(targetPlayer.getUniqueId(), reason, format, fromPlayer.getUniqueId())).getBytes()).toString();
+                String str = Base64.getEncoder().encode(new Gson().toJson(new BanShareJson(authData.getServerUUID(), targetPlayer.getUniqueId(), reason, format, fromPlayer.getUniqueId())).getBytes()).toString();
 
                 ByteArrayOutputStream obj = new ByteArrayOutputStream();
                 GZIPOutputStream gzip = new GZIPOutputStream(obj);
