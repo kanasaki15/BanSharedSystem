@@ -125,7 +125,7 @@ public class ShareBAN implements BANInterface {
                 //System.out.println("Debug3");
                 if (fromPlayer != null){
                     //System.out.println("Debug4 : " + new Function().UUID2UserName(targetPlayer));
-                    Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(new Function().UUID2UserName(event.getFromUserUUID()), event.getReason(), event.getExpirationDate(), new Function().UUID2UserName(event.getFromUserUUID()));
+                    Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(new Function().UUID2UserName(event.getTargetUserUUID()), event.getReason(), event.getExpirationDate(), new Function().UUID2UserName(event.getFromUserUUID()));
                     banShareJson = new BanShareJson(authData.getServerUUID(), event.getTargetUserUUID(), event.getReason(), format, fromPlayer);
                 } else {
                     Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(new Function().UUID2UserName(event.getFromUserUUID()), event.getReason(), event.getExpirationDate(), "console");
