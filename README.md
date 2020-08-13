@@ -1,4 +1,6 @@
 # BanSharedSystem
+[![](https://jitpack.io/v/kanasaki15/BanSharedSystem.svg)](https://jitpack.io/#kanasaki15/BanSharedSystem)
+
 
 身内鯖用BANシステムの前提プラグイン<br>
 Spigot1.15以降、Java 8以降に対応<br>
