@@ -12,8 +12,8 @@ import java.util.UUID;
 public class BanList {
 
     @Deprecated
-    public List<BanShareData> getList(AuthData data){
-        return getListByServer(data);
+    public List<BanShareData> getShareList(AuthData data){
+        return getShareListByServer(data);
     }
 
     public List<BanShareData> getAllList(){
@@ -21,7 +21,7 @@ public class BanList {
         return list;
     }
 
-    public List<BanShareData> getListByServer(AuthData data){
+    public List<BanShareData> getShareListByServer(AuthData data){
         List<BanShareData> list = new ArrayList<>();
 
         if (data != null && data.getServerUUID() != null){
@@ -31,7 +31,7 @@ public class BanList {
         return list;
     }
 
-    public List<BanShareData> getListByServer(UUID serverUUID){
+    public List<BanShareData> getShareListByServer(UUID serverUUID){
         List<BanShareData> list = new ArrayList<>();
 
         if (serverUUID != null){
@@ -41,7 +41,7 @@ public class BanList {
         return list;
     }
 
-    public List<BanShareData> getListByServer(String serverName){
+    public List<BanShareData> getShareListByServer(String serverName){
         List<BanShareData> list = new ArrayList<>();
 
         if (serverName != null){
@@ -51,7 +51,7 @@ public class BanList {
         return list;
     }
 
-    public List<BanShareData> getListByUser(UUID uuid){
+    public List<BanShareData> getShareListByUser(UUID uuid){
         if (uuid != null){
             return new Gson().fromJson(new Http().get(APIURL.BaseURL+APIURL.Version+APIURL.BanListByUser+uuid.toString()), new TypeToken<Collection<BanShareData>>(){}.getType());
         }
