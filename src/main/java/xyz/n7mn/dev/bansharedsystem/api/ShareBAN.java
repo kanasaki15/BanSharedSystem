@@ -60,7 +60,7 @@ public class ShareBAN implements BANInterface {
 
                 return new Gson().fromJson(new Http().get(APIURL.BaseURL + APIURL.Version + APIURL.BanShareAdd + URLEncoder.encode(str,"UTF-8")), boolean.class);
             } else {
-                return new Gson().fromJson(new Http().get(APIURL.BaseURL + APIURL.Version + APIURL.BanShareRemove + URLEncoder.encode(fromPlayer.getUniqueId().toString(),"UTF-8")), boolean.class);
+                return new Gson().fromJson(new Http().get(APIURL.BaseURL + APIURL.Version + APIURL.BanShareRemove + URLEncoder.encode(fromPlayer.getUniqueId().toString(),"UTF-8")+"&s_uuid="+URLEncoder.encode(authData.getServerUUID().toString(), "UTF-8")), boolean.class);
             }
         } catch (IOException e) {
             // e.printStackTrace();
