@@ -65,6 +65,7 @@ public class ShareBAN implements BANInterface {
                 if (!json){
                     Bukkit.getServer().getBanList(BanList.Type.NAME).pardon(targetPlayer.getName());
                 }
+                targetPlayer.kickPlayer("You've been banned. Reason : "+reason);
                 return json;
             } else {
                 return new Gson().fromJson(new Http().get(APIURL.BaseURL + APIURL.Version + APIURL.BanShareRemove + URLEncoder.encode(fromPlayer.getUniqueId().toString(),"UTF-8")+"&s_uuid="+URLEncoder.encode(authData.getServerUUID().toString(), "UTF-8")), boolean.class);
@@ -89,14 +90,20 @@ public class ShareBAN implements BANInterface {
             // e.printStackTrace();
         }
 
+        //System.out.println("Debug1");
+        //System.out.println("Debug1-1 : " + expirationDate.getTime());
+        //System.out.println("Debug1-1 : " + new Date().getTime());
         if (expirationDate.getTime() <= new Date().getTime()){
             return false;
         }
+
+        //System.out.println("Debug1-2");
 
         if (expirationDate.getTime() >= maxDate.getTime()){
             expirationDate = null;
         }
 
+        //System.out.println("Debug1-3 : " + (expirationDate == null));
 
         BanExecuteEvent event = new BanExecuteEvent(fromPlayer, targetPlayer, reason, expirationDate, "ShareBan", isBan);
         Bukkit.getPluginManager().callEvent(event);
@@ -105,20 +112,32 @@ public class ShareBAN implements BANInterface {
             return false;
         }
 
+        //System.out.println("Debug2");
         try {
 
             if (isBan){
-                String format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(expirationDate);
+                String format = "9999-12-31 23:59:59";
+                if (event.getExpirationDate() != null){
+                    format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(event.getExpirationDate());
+                }
+
                 BanShareJson banShareJson;
+                //System.out.println("Debug3");
                 if (fromPlayer != null){
-                    Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(new Function().UUID2UserName(targetPlayer), reason, expirationDate, new Function().UUID2UserName(fromPlayer));
-                    banShareJson = new BanShareJson(authData.getServerUUID(), targetPlayer, reason, format, fromPlayer);
+                    //System.out.println("Debug4 : " + new Function().UUID2UserName(targetPlayer));
+                    Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(new Function().UUID2UserName(event.getFromUserUUID()), event.getReason(), event.getExpirationDate(), new Function().UUID2UserName(event.getFromUserUUID()));
+                    banShareJson = new BanShareJson(authData.getServerUUID(), event.getTargetUserUUID(), event.getReason(), format, fromPlayer);
                 } else {
-                    Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(new Function().UUID2UserName(targetPlayer), reason, expirationDate, "console");
+                    Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(new Function().UUID2UserName(event.getFromUserUUID()), event.getReason(), event.getExpirationDate(), "console");
                     banShareJson = new BanShareJson(authData.getServerUUID(), targetPlayer, reason, format, null);
                 }
 
                 byte[] encode = Base64.getEncoder().encode(new Gson().toJson(banShareJson).getBytes(StandardCharsets.UTF_8));
+
+                if (Bukkit.getPlayer(targetPlayer) != null){
+                    Bukkit.getPlayer(targetPlayer).kickPlayer("You've been banned. Reason : "+reason);
+                }
+
                 return new Gson().fromJson(new Http().get(APIURL.BaseURL + APIURL.Version + APIURL.BanShareAdd + URLEncoder.encode(new String(encode), "UTF-8")), boolean.class);
             } else {
                 Bukkit.getServer().getBanList(BanList.Type.NAME).pardon(new Function().UUID2UserName(targetPlayer));

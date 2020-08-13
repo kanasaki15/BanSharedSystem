@@ -34,6 +34,7 @@ class Function {
         String uuidString = uuid.toString().replaceAll("-", "");
 
         UUID2NameHistoryJsonData[] data = new Gson().fromJson(new Http().get("https://api.mojang.com/user/profiles/" + uuidString + "/names"), UUID2NameHistoryJsonData[].class);
+        // System.out.println(data[0].getName());
         return data[0].getName();
     }
 }

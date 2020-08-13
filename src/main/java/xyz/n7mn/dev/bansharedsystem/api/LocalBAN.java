@@ -105,10 +105,15 @@ public class LocalBAN implements BANInterface {
         try {
 
             if (isBan){
+
+                if (Bukkit.getPlayer(event.getTargetUserUUID()) != null){
+                    Bukkit.getPlayer(event.getTargetUserUUID()).kickPlayer("You've been banned. Reason : "+reason);
+                }
+
                 if (fromPlayer != null){
-                    Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(new Function().UUID2UserName(targetPlayer), reason, expirationDate, new Function().UUID2UserName(fromPlayer));
+                    Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(new Function().UUID2UserName(event.getTargetUserUUID()), event.getReason(), event.getExpirationDate(), new Function().UUID2UserName(event.getFromUserUUID()));
                 } else {
-                    Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(new Function().UUID2UserName(targetPlayer), reason, expirationDate, "console");
+                    Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(new Function().UUID2UserName(event.getTargetUserUUID()), event.getReason(), event.getExpirationDate(), "console");
                 }
                 return true;
             } else {
