@@ -27,7 +27,7 @@ public class ShareBAN implements BANInterface {
 
         Date parse = new Date();
         try {
-            parse = new SimpleDateFormat("yyyy-MM-dd hh:ii:ss").parse("9999-12-31 23:59:59");
+            parse = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse("9999-12-31 23:59:59");
         } catch (ParseException e) {
             // e.printStackTrace();
         }
@@ -48,7 +48,7 @@ public class ShareBAN implements BANInterface {
                     return false;
                 }
 
-                String format = new SimpleDateFormat("yyyy-MM-dd hh:ii:ss").format(expirationDate);
+                String format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(expirationDate);
                 String str = Base64.getEncoder().encode(new Gson().toJson(new BanShareJson(authData.getServerUUID(), targetPlayer.getUniqueId(), reason, format, fromPlayer.getUniqueId())).getBytes()).toString();
 
                 ByteArrayOutputStream obj = new ByteArrayOutputStream();
@@ -63,7 +63,7 @@ public class ShareBAN implements BANInterface {
                 return new Gson().fromJson(new Http().get(APIURL.BaseURL + APIURL.Version + APIURL.BanShareRemove + URLEncoder.encode(fromPlayer.getUniqueId().toString(),"UTF-8")+"&s_uuid="+URLEncoder.encode(authData.getServerUUID().toString(), "UTF-8")), boolean.class);
             }
         } catch (IOException e) {
-            // e.printStackTrace();
+            e.printStackTrace();
         }
 
         return false;

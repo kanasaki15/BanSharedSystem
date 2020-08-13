@@ -23,7 +23,7 @@ public class LocalBAN implements BANInterface {
 
         Date parse = new Date();
         try {
-            parse = new SimpleDateFormat("yyyy-MM-dd hh:ii:ss").parse("9999-12-31 23:59:59");
+            parse = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse("9999-12-31 23:59:59");
         } catch (ParseException e) {
             // e.printStackTrace();
         }
@@ -36,9 +36,10 @@ public class LocalBAN implements BANInterface {
 
             Date parse = new Date();
             try {
-                parse = new SimpleDateFormat("yyyy-MM-dd hh:ii:ss").parse("9999-12-31 23:59:59");
+                parse = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse("9999-12-31 23:59:59");
             } catch (ParseException e) {
                 // e.printStackTrace();
+                return false;
             }
 
             if (expirationDate == null){
@@ -66,6 +67,7 @@ public class LocalBAN implements BANInterface {
                 return true;
             }
         } catch (Exception e){
+            e.printStackTrace();
             return false;
         }
     }
