@@ -32,6 +32,7 @@ public class LocalBAN implements BANInterface {
         return run(fromPlayer, targetPlayer, reason, parse, true);
     }
 
+    @Deprecated
     public boolean run(Player fromPlayer, Player targetPlayer, String reason, Date expirationDate, boolean isBan){
         try {
 

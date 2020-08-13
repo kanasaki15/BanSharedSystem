@@ -27,6 +27,7 @@ public class ShareBAN implements BANInterface {
     }
 
     @Override
+    @Deprecated
     public boolean run(Player fromPlayer, Player targetPlayer, String reason) {
 
         Date parse = new Date();
