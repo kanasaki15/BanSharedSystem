@@ -47,6 +47,12 @@ public class BanList {
             list = gson.fromJson(new Http().get(APIURL.BaseURL+APIURL.Version+APIURL.BanListByServer+data.getServerUUID().toString()), new TypeToken<Collection<BanShareData>>(){}.getType());
         }
 
+        for (int i = 0; i < list.size(); i++){
+            if (list.get(i).getBanExecuteDate().getTime() < new Date().getTime()){
+                list.remove(i);
+            }
+        }
+
         return list;
     }
 
@@ -55,6 +61,12 @@ public class BanList {
 
         if (serverUUID != null){
             list = gson.fromJson(new Http().get(APIURL.BaseURL+APIURL.Version+APIURL.BanListByServer+serverUUID.toString()), new TypeToken<Collection<BanShareData>>(){}.getType());
+        }
+
+        for (int i = 0; i < list.size(); i++){
+            if (list.get(i).getBanExecuteDate().getTime() < new Date().getTime()){
+                list.remove(i);
+            }
         }
 
         return list;
@@ -67,12 +79,26 @@ public class BanList {
             list = gson.fromJson(new Http().get(APIURL.BaseURL+APIURL.Version+APIURL.BanListByServer+serverName+"&mode=name"), new TypeToken<Collection<BanShareData>>(){}.getType());
         }
 
+        for (int i = 0; i < list.size(); i++){
+            if (list.get(i).getBanExecuteDate().getTime() < new Date().getTime()){
+                list.remove(i);
+            }
+        }
+
         return list;
     }
 
     public List<BanShareData> getShareListByUser(UUID uuid){
         if (uuid != null){
-            return gson.fromJson(new Http().get(APIURL.BaseURL+APIURL.Version+APIURL.BanListByUser+uuid.toString()), new TypeToken<Collection<BanShareData>>(){}.getType());
+            List<BanShareData> list = gson.fromJson(new Http().get(APIURL.BaseURL+APIURL.Version+APIURL.BanListByUser+uuid.toString()), new TypeToken<Collection<BanShareData>>(){}.getType());
+
+            for (int i = 0; i < list.size(); i++){
+                if (list.get(i).getBanExecuteDate().getTime() < new Date().getTime()){
+                    list.remove(i);
+                }
+            }
+
+            return list;
         }
 
         return new ArrayList<>();
