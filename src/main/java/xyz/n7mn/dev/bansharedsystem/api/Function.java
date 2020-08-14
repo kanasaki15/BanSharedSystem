@@ -27,7 +27,7 @@ class Function {
         }
 
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
-        if (offlinePlayer != null) {
+        if (offlinePlayer != null && offlinePlayer.getPlayer() != null) {
             return offlinePlayer.getPlayer().getName();
         }
 
@@ -35,6 +35,6 @@ class Function {
 
         UUID2NameHistoryJsonData[] data = new Gson().fromJson(new Http().get("https://api.mojang.com/user/profiles/" + uuidString + "/names"), UUID2NameHistoryJsonData[].class);
         // System.out.println(data[0].getName());
-        return data[0].getName();
+        return data[data.length - 1].getName();
     }
 }

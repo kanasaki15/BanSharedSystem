@@ -90,20 +90,20 @@ public class ShareBAN implements BANInterface {
             // e.printStackTrace();
         }
 
-        //System.out.println("Debug1");
-        //System.out.println("Debug1-1 : " + expirationDate.getTime());
-        //System.out.println("Debug1-1 : " + new Date().getTime());
+        // System.out.println("Debug1");
+        // System.out.println("Debug1-1 : " + expirationDate.getTime());
+        // System.out.println("Debug1-1 : " + new Date().getTime());
         if (expirationDate.getTime() <= new Date().getTime()){
             return false;
         }
 
-        //System.out.println("Debug1-2");
+        // System.out.println("Debug1-2");
 
         if (expirationDate.getTime() >= maxDate.getTime()){
             expirationDate = null;
         }
 
-        //System.out.println("Debug1-3 : " + (expirationDate == null));
+        // System.out.println("Debug1-3 : " + (expirationDate == null));
 
         BanExecuteEvent event = new BanExecuteEvent(fromPlayer, targetPlayer, reason, expirationDate, "ShareBan", isBan);
         Bukkit.getPluginManager().callEvent(event);
@@ -112,7 +112,7 @@ public class ShareBAN implements BANInterface {
             return false;
         }
 
-        //System.out.println("Debug2");
+        // System.out.println("Debug2");
         try {
 
             if (isBan){
@@ -122,12 +122,13 @@ public class ShareBAN implements BANInterface {
                 }
 
                 BanShareJson banShareJson;
-                //System.out.println("Debug3");
-                if (fromPlayer != null){
-                    //System.out.println("Debug4 : " + new Function().UUID2UserName(targetPlayer));
+                // System.out.println("Debug3");
+                if (event.getFromUserUUID() != null){
+                    // System.out.println("Debug4 : " + new Function().UUID2UserName(event.getTargetUserUUID()));
                     Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(new Function().UUID2UserName(event.getTargetUserUUID()), event.getReason(), event.getExpirationDate(), new Function().UUID2UserName(event.getFromUserUUID()));
                     banShareJson = new BanShareJson(authData.getServerUUID(), event.getTargetUserUUID(), event.getReason(), format, fromPlayer);
                 } else {
+                    // System.out.println("Debug4");
                     Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(new Function().UUID2UserName(event.getFromUserUUID()), event.getReason(), event.getExpirationDate(), "console");
                     banShareJson = new BanShareJson(authData.getServerUUID(), targetPlayer, reason, format, null);
                 }
@@ -138,6 +139,7 @@ public class ShareBAN implements BANInterface {
                     Bukkit.getPlayer(targetPlayer).kickPlayer("You've been banned. Reason : "+reason);
                 }
 
+                // System.out.println(APIURL.BaseURL + APIURL.Version + APIURL.BanShareAdd + URLEncoder.encode(new String(encode), "UTF-8"));
                 return new Gson().fromJson(new Http().get(APIURL.BaseURL + APIURL.Version + APIURL.BanShareAdd + URLEncoder.encode(new String(encode), "UTF-8")), boolean.class);
             } else {
                 Bukkit.getServer().getBanList(BanList.Type.NAME).pardon(new Function().UUID2UserName(targetPlayer));
@@ -145,7 +147,7 @@ public class ShareBAN implements BANInterface {
             }
 
         } catch (Exception e) {
-            // e.printStackTrace();
+            e.printStackTrace();
             return false;
         }
     }
