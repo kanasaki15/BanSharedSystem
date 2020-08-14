@@ -1,7 +1,5 @@
 package xyz.n7mn.dev.bansharedsystem.api.result;
 
-import xyz.n7mn.dev.bansharedsystem.event.BanExecuteEvent;
-
 import java.util.Date;
 import java.util.UUID;
 

@@ -1,8 +1,7 @@
-package xyz.n7mn.dev.bansharedsystem.api;
+package xyz.n7mn.dev.bansharedsystem.api.ban;
 
 import java.util.UUID;
 
-@Deprecated
 class BanShareJson {
     private UUID ServerUUID;
     private UUID TargetUserUUID;

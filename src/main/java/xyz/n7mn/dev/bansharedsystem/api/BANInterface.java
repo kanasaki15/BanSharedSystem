@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import java.util.Date;
 import java.util.UUID;
 
-interface BANInterface {
+public interface BANInterface {
 
     boolean run(UUID targetPlayer, UUID fromPlayer, String reason, Date expirationDate, boolean isBan);
 

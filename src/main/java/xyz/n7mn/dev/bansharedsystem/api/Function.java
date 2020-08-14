@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-class Function {
+public class Function {
     private final String Version = Bukkit.getPluginManager().getPlugin("BanSharedSystem").getDescription().getVersion();
 
     private final int UseLibVer = 1;

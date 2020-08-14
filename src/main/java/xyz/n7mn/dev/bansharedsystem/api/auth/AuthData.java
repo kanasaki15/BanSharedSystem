@@ -1,8 +1,7 @@
-package xyz.n7mn.dev.bansharedsystem.api;
+package xyz.n7mn.dev.bansharedsystem.api.auth;
 
 import java.util.UUID;
 
-@Deprecated
 public class AuthData {
     private UUID ServerUUID;
     private String ServerName;

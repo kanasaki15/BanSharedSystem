@@ -11,7 +11,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-class Http {
+public class Http {
 
     public String get(String url){
         HttpURLConnection urlConnection = null;

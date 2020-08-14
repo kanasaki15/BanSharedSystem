@@ -1,7 +1,10 @@
-package xyz.n7mn.dev.bansharedsystem.api;
+package xyz.n7mn.dev.bansharedsystem.api.ban;
 
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
+import xyz.n7mn.dev.bansharedsystem.api.auth.AuthData;
+import xyz.n7mn.dev.bansharedsystem.api.BANInterface;
+import xyz.n7mn.dev.bansharedsystem.api.Function;
 import xyz.n7mn.dev.bansharedsystem.event.BanExecuteEvent;
 
 import java.text.ParseException;
@@ -9,7 +12,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
-@Deprecated
 public class LocalBAN implements BANInterface {
 
     private AuthData authData = null;

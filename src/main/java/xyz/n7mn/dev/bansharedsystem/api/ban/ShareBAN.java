@@ -1,28 +1,46 @@
-package xyz.n7mn.dev.bansharedsystem.api;
+package xyz.n7mn.dev.bansharedsystem.api.ban;
 
 import com.google.gson.Gson;
-
-import java.util.Base64;
-
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import xyz.n7mn.dev.bansharedsystem.api.*;
+import xyz.n7mn.dev.bansharedsystem.api.auth.AuthData;
 import xyz.n7mn.dev.bansharedsystem.event.BanExecuteEvent;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
 
-@Deprecated
 public class ShareBAN implements BANInterface {
 
     private AuthData authData = null;
 
     public ShareBAN(AuthData data) {
         this.authData = data;
+    }
+
+    @Deprecated
+    public void init(AuthData data) {
+        this.authData = data;
+    }
+
+    @Deprecated
+    public boolean run(Player fromPlayer, Player targetPlayer, String reason, Date expirationDate, boolean isBan){
+
+        if (fromPlayer == null && targetPlayer == null) {
+            return false;
+        } else if (fromPlayer == null) {
+            return false;
+        } else if (targetPlayer == null) {
+            return false;
+        } else {
+            return run(targetPlayer.getUniqueId(), fromPlayer.getUniqueId(), reason, expirationDate, isBan);
+        }
     }
 
     public boolean run(UUID targetPlayer, UUID fromPlayer, String reason, Date expirationDate, boolean isBan){

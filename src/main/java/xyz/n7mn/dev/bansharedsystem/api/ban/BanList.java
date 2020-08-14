@@ -1,8 +1,11 @@
-package xyz.n7mn.dev.bansharedsystem.api;
+package xyz.n7mn.dev.bansharedsystem.api.ban;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.*;
 import org.bukkit.Bukkit;
+import xyz.n7mn.dev.bansharedsystem.api.APIURL;
+import xyz.n7mn.dev.bansharedsystem.api.auth.AuthData;
+import xyz.n7mn.dev.bansharedsystem.api.Http;
 import xyz.n7mn.dev.bansharedsystem.api.result.BanShareData;
 
 import java.lang.reflect.Type;
@@ -10,7 +13,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-@Deprecated
 public class BanList {
 
     Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {

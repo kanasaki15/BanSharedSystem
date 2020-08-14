@@ -1,9 +1,10 @@
-package xyz.n7mn.dev.bansharedsystem.api;
+package xyz.n7mn.dev.bansharedsystem.api.auth;
 
 import com.google.gson.Gson;
-import org.bukkit.event.EventHandler;
+import xyz.n7mn.dev.bansharedsystem.api.APIURL;
+import xyz.n7mn.dev.bansharedsystem.api.Function;
+import xyz.n7mn.dev.bansharedsystem.api.Http;
 
-@Deprecated
 public class Auth {
 
     private String code = null;
