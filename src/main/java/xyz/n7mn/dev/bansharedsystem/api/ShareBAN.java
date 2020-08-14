@@ -2,7 +2,6 @@ package xyz.n7mn.dev.bansharedsystem.api;
 
 import com.google.gson.Gson;
 
-import java.io.*;
 import java.util.Base64;
 
 import org.bukkit.BanList;
@@ -21,60 +20,27 @@ public class ShareBAN implements BANInterface {
 
     private AuthData authData = null;
 
-    @Override
+    public ShareBAN(AuthData data) {
+        this.authData = data;
+    }
+
+    @Deprecated
     public void init(AuthData data) {
         this.authData = data;
     }
 
-    @Override
     @Deprecated
-    public boolean run(Player fromPlayer, Player targetPlayer, String reason) {
-
-        Date parse = new Date();
-        try {
-            parse = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse("9999-12-31 23:59:59");
-        } catch (ParseException e) {
-            // e.printStackTrace();
-        }
-
-        return run(fromPlayer, targetPlayer, reason, parse, true);
-    }
-
     public boolean run(Player fromPlayer, Player targetPlayer, String reason, Date expirationDate, boolean isBan){
 
-        if (authData == null){
+        if (fromPlayer == null && targetPlayer == null) {
             return false;
+        } else if (fromPlayer == null) {
+            return false;
+        } else if (targetPlayer == null) {
+            return false;
+        } else {
+            return run(targetPlayer.getUniqueId(), fromPlayer.getUniqueId(), reason, expirationDate, isBan);
         }
-
-        try {
-            if (isBan){
-                boolean run = new LocalBAN().run(fromPlayer, targetPlayer, reason, expirationDate, isBan);
-
-                if (!run){
-                    return false;
-                }
-
-                String format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(expirationDate);
-
-                BanShareJson banShareJson = new BanShareJson(authData.getServerUUID(), targetPlayer.getUniqueId(), reason, format, fromPlayer.getUniqueId());
-
-                byte[] encode = Base64.getEncoder().encode(new Gson().toJson(banShareJson).getBytes(StandardCharsets.UTF_8));
-
-                boolean json = new Gson().fromJson(new Http().get(APIURL.BaseURL + APIURL.Version + APIURL.BanShareAdd + URLEncoder.encode(new String(encode), "UTF-8")), boolean.class);
-
-                if (!json){
-                    Bukkit.getServer().getBanList(BanList.Type.NAME).pardon(targetPlayer.getName());
-                }
-                targetPlayer.kickPlayer("You've been banned. Reason : "+reason);
-                return json;
-            } else {
-                return new Gson().fromJson(new Http().get(APIURL.BaseURL + APIURL.Version + APIURL.BanShareRemove + URLEncoder.encode(fromPlayer.getUniqueId().toString(),"UTF-8")+"&s_uuid="+URLEncoder.encode(authData.getServerUUID().toString(), "UTF-8")), boolean.class);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return false;
     }
 
     public boolean run(UUID targetPlayer, UUID fromPlayer, String reason, Date expirationDate, boolean isBan){
@@ -140,6 +106,7 @@ public class ShareBAN implements BANInterface {
                 }
 
                 // System.out.println(APIURL.BaseURL + APIURL.Version + APIURL.BanShareAdd + URLEncoder.encode(new String(encode), "UTF-8"));
+
                 return new Gson().fromJson(new Http().get(APIURL.BaseURL + APIURL.Version + APIURL.BanShareAdd + URLEncoder.encode(new String(encode), "UTF-8")), boolean.class);
             } else {
                 Bukkit.getServer().getBanList(BanList.Type.NAME).pardon(new Function().UUID2UserName(targetPlayer));
