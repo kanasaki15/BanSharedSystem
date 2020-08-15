@@ -68,16 +68,24 @@ public class ShareBAN implements BANInterface {
                     format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(event.getExpirationDate());
                 }
 
-                BanShareJson banShareJson;
+                BanShareJson banShareJson = null;
                 // System.out.println("Debug3");
                 if (event.getFromUserUUID() != null){
                     // System.out.println("Debug4 : " + new Function().UUID2UserName(event.getTargetUserUUID()));
-                    Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(new Function().UUID2UserName(event.getTargetUserUUID()), event.getReason(), event.getExpirationDate(), new Function().UUID2UserName(event.getFromUserUUID()));
-                    banShareJson = new BanShareJson(authData.getServerUUID(), event.getTargetUserUUID(), event.getReason(), format, fromPlayer);
+                    if (event.getTargetUserUUID() != null){
+                        Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(new Function().UUID2UserName(event.getTargetUserUUID()), event.getReason(), event.getExpirationDate(), new Function().UUID2UserName(event.getFromUserUUID()));
+                        banShareJson = new BanShareJson(authData.getServerUUID(), event.getTargetUserUUID(), event.getReason(), format, fromPlayer);
+                    }
                 } else {
                     // System.out.println("Debug4");
-                    Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(new Function().UUID2UserName(event.getFromUserUUID()), event.getReason(), event.getExpirationDate(), "console");
-                    banShareJson = new BanShareJson(authData.getServerUUID(), targetPlayer, reason, format, null);
+                    if (event.getTargetUserUUID() != null) {
+                        Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(new Function().UUID2UserName(event.getFromUserUUID()), event.getReason(), event.getExpirationDate(), "console");
+                        banShareJson = new BanShareJson(authData.getServerUUID(), targetPlayer, reason, format, null);
+                    }
+                }
+
+                if (banShareJson == null){
+                    return false;
                 }
 
                 byte[] encode = Base64.getEncoder().encode(new Gson().toJson(banShareJson).getBytes(StandardCharsets.UTF_8));

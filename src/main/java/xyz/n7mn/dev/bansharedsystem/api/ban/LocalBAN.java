@@ -12,6 +12,8 @@ import xyz.n7mn.dev.bansharedsystem.api.BANInterface;
 import xyz.n7mn.dev.bansharedsystem.api.Function;
 import xyz.n7mn.dev.bansharedsystem.event.BanExecuteEvent;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -22,26 +24,18 @@ public class LocalBAN implements BANInterface {
 
     private Plugin plugin = Bukkit.getPluginManager().getPlugin("BanSharedSystem");
 
+    @Deprecated
     public LocalBAN(){
-        Plugin[] plugins = Bukkit.getPluginManager().getPlugins();
-
-        for (int i = 0; i < plugins.length; i++){
-            List<String> dependList = plugins[i].getDescription().getDepend();
-            for (String depend : dependList){
-                if (depend.equals("BanSharedSystem")){
-                    this.plugin = plugins[i];
-                    return;
-                }
-            }
-
-            List<String> softDependList = plugins[i].getDescription().getSoftDepend();
-            for (String softDepend : softDependList){
-                if (softDepend.equals("BanSharedSystem")){
-                    this.plugin = plugins[i];
-                    return;
-                }
-            }
+        File folder = plugin.getDataFolder();
+        try{
+            folder.createNewFile();
+        } catch (IOException e) {
+            // e.printStackTrace();
         }
+    }
+
+    public LocalBAN(Plugin plugin) {
+        this.plugin = plugin;
     }
 
     private boolean run(UUID targetPlayer, UUID fromPlayer, String reason, Date expirationDate, boolean isBan){

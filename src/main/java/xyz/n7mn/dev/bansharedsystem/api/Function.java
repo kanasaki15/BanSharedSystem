@@ -23,6 +23,9 @@ public class Function {
     }
 
     public String UUID2UserName(UUID uuid) {
+
+        if (uuid == null){ return null; }
+
         Player player = Bukkit.getPlayer(uuid);
         if (player != null) {
             return player.getName();
