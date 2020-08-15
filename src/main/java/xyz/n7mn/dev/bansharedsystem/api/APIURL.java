@@ -15,6 +15,11 @@ public class APIURL {
     public static final String BanListByServer = "/list.php?uuid=";
     public static final String BanListByUser   = "/list.php?user=";
 
+    public static final String BanProtestList = "/protest.php";
+    public static final String BanProtestListByServer = "/protest.php?uuid=";
+    public static final String BanProtestAdd = "/protest.php?data=";
+    public static final String BanProtestDel = "/protest.php?id=";
+
     public static final String APIServerIPv4 = "139.162.102.164";
     public static final String APIServerIPv6 = "2400:8902::f03c:92ff:fe7a:f18b";
 }
