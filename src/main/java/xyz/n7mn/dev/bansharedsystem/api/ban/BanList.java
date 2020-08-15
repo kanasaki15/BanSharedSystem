@@ -53,7 +53,7 @@ public class BanList {
         }
 
         for (int i = 0; i < list.size(); i++){
-            if (list.get(i).getBanExecuteDate().getTime() < new Date().getTime()){
+            if (list.get(i).getBanExpirationDate().getTime() < new Date().getTime()){
                 list.remove(i);
             }
         }
@@ -69,7 +69,7 @@ public class BanList {
         }
 
         for (int i = 0; i < list.size(); i++){
-            if (list.get(i).getBanExecuteDate().getTime() < new Date().getTime()){
+            if (list.get(i).getBanExpirationDate().getTime() < new Date().getTime()){
                 list.remove(i);
             }
         }
@@ -85,7 +85,7 @@ public class BanList {
         }
 
         for (int i = 0; i < list.size(); i++){
-            if (list.get(i).getBanExecuteDate().getTime() < new Date().getTime()){
+            if (list.get(i).getBanExpirationDate().getTime() < new Date().getTime()){
                 list.remove(i);
             }
         }
@@ -98,7 +98,7 @@ public class BanList {
             List<BanShareData> list = gson.fromJson(new Http().get(APIURL.BaseURL+APIURL.Version+APIURL.BanListByUser+uuid.toString()), new TypeToken<Collection<BanShareData>>(){}.getType());
 
             for (int i = 0; i < list.size(); i++){
-                if (list.get(i).getBanExecuteDate().getTime() < new Date().getTime()){
+                if (list.get(i).getBanExpirationDate().getTime() < new Date().getTime()){
                     list.remove(i);
                 }
             }
@@ -109,29 +109,32 @@ public class BanList {
         return new ArrayList<>();
     }
 
-    public List<BanShareData> getShareLocalList(){
+    public List<BanShareData> getShareLocalList(AuthData auth){
+        return getShareLocalList(auth.getServerName());
+    }
+
+    public List<BanShareData> getShareLocalList(String serverName){
         List<BanShareData> list = new ArrayList<>();
 
         Set<BanEntry> entryList = Bukkit.getBanList(org.bukkit.BanList.Type.NAME).getBanEntries();
 
         int i = 1;
         for (BanEntry entry : entryList){
-            BanShareData data = new BanShareData(i, new Function().UserName2UUID(entry.getTarget()),"ちのなみ鯖", new Function().UserName2UUID(entry.getSource()), entry.getReason(), entry.getExpiration(), entry.getCreated(), true);
+            BanShareData data = new BanShareData(i, new Function().UserName2UUID(entry.getTarget()), serverName, new Function().UserName2UUID(entry.getSource()), entry.getReason(), entry.getExpiration(), entry.getCreated(), true);
             list.add(data);
         }
 
         return list;
     }
 
-
     public List<BanShare> getAllBanList(AuthData auth){
-        return getAllBanList(auth.getServerUUID());
+        return getAllBanList(auth.getServerUUID(), auth.getServerName());
     }
 
-    public List<BanShare> getAllBanList(UUID serverUUID){
+    public List<BanShare> getAllBanList(UUID serverUUID, String serverName){
 
         List<BanShareData> shareList = getShareListByServer(serverUUID);
-        List<BanShareData> localList = getShareLocalList();
+        List<BanShareData> localList = getShareLocalList(serverName);
 
         List<BanShare> tempList = new ArrayList<>();
         int i = 1;
@@ -139,18 +142,33 @@ public class BanList {
             tempList.add(new BanShare(i, temp.getBanUserUUID(), temp.getServerName(), temp.getBanExecuteUserUUID(), temp.getReason(), temp.getBanExpirationDate(), temp.getBanExecuteDate(), "Share", temp.isActive()));
             i++;
         }
+        // System.out.println("i :"+i);
         for (BanShareData temp : localList){
-            tempList.add(new BanShare(i, temp.getBanUserUUID(), temp.getServerName(), temp.getBanExecuteUserUUID(), temp.getReason(), temp.getBanExpirationDate(), temp.getBanExecuteDate(), "Local", temp.isActive()));
-            i++;
+            for (BanShareData banShareData : shareList) {
+                if (banShareData.getBanUserUUID().equals(temp.getBanUserUUID())) {
+                    continue;
+                }
+
+                tempList.add(new BanShare(i, temp.getBanUserUUID(), temp.getServerName(), temp.getBanExecuteUserUUID(), temp.getReason(), temp.getBanExpirationDate(), temp.getBanExecuteDate(), "Local", temp.isActive()));
+                i++;
+            }
         }
+        // System.out.println("i :"+i);
 
         tempList.sort((obj1, obj2) -> (int) (obj1.getBanExecuteDate().getTime() - obj2.getBanExecuteDate().getTime()));
 
-        for (int x = 0; i < tempList.size(); i++){
-            if (tempList.get(x).getBanExecuteDate().getTime() < new Date().getTime()){
+        Date now = new Date();
+        for (int x = 0; x < tempList.size(); x++){
+            Date expirationDate = tempList.get(x).getBanExpirationDate();
+            if (expirationDate == null){
+                continue;
+            }
+            if (expirationDate.getTime() < now.getTime()){
                 tempList.remove(x);
             }
         }
+
+        // System.out.println("count : " + tempList.size());
 
         return tempList;
 
