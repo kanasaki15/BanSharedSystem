@@ -95,7 +95,7 @@ public class LocalBAN implements BANInterface {
     public boolean ban(UUID fromPlayer, UUID targetPlayer, String reason, Date expirationDate) {
         boolean run = run(targetPlayer, fromPlayer, reason, expirationDate, true);
 
-        String pass = "./" + plugin.getDataFolder() + "/LocalBanList.json";
+        String pass = "./" + plugin.getDataFolder().getPath() + "/LocalBanList.json";
 
         String s = new Function().fileRead(pass);
         List<LocalBANList> list = null;
