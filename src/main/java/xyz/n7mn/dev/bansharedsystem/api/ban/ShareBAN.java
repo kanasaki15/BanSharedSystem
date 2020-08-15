@@ -24,26 +24,7 @@ public class ShareBAN implements BANInterface {
         this.authData = data;
     }
 
-    @Deprecated
-    public void init(AuthData data) {
-        this.authData = data;
-    }
-
-    @Deprecated
-    public boolean run(Player fromPlayer, Player targetPlayer, String reason, Date expirationDate, boolean isBan){
-
-        if (fromPlayer == null && targetPlayer == null) {
-            return false;
-        } else if (fromPlayer == null) {
-            return false;
-        } else if (targetPlayer == null) {
-            return false;
-        } else {
-            return run(targetPlayer.getUniqueId(), fromPlayer.getUniqueId(), reason, expirationDate, isBan);
-        }
-    }
-
-    public boolean run(UUID targetPlayer, UUID fromPlayer, String reason, Date expirationDate, boolean isBan){
+    private boolean run(UUID targetPlayer, UUID fromPlayer, String reason, Date expirationDate, boolean isBan){
 
         if (authData == null){
             return false;

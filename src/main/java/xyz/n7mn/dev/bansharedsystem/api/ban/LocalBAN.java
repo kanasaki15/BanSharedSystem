@@ -1,7 +1,12 @@
 package xyz.n7mn.dev.bansharedsystem.api.ban;
 
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import org.bukkit.BanEntry;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 import xyz.n7mn.dev.bansharedsystem.api.auth.AuthData;
 import xyz.n7mn.dev.bansharedsystem.api.BANInterface;
 import xyz.n7mn.dev.bansharedsystem.api.Function;
@@ -9,19 +14,37 @@ import xyz.n7mn.dev.bansharedsystem.event.BanExecuteEvent;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 public class LocalBAN implements BANInterface {
 
     private AuthData authData = null;
 
-    public LocalBAN(){
+    private Plugin plugin = Bukkit.getPluginManager().getPlugin("BanSharedSystem");
 
+    public LocalBAN(){
+        Plugin[] plugins = Bukkit.getPluginManager().getPlugins();
+
+        for (int i = 0; i < plugins.length; i++){
+            List<String> dependList = plugins[i].getDescription().getDepend();
+            for (String depend : dependList){
+                if (depend.equals("BanSharedSystem")){
+                    this.plugin = plugins[i];
+                    return;
+                }
+            }
+
+            List<String> softDependList = plugins[i].getDescription().getSoftDepend();
+            for (String softDepend : softDependList){
+                if (softDepend.equals("BanSharedSystem")){
+                    this.plugin = plugins[i];
+                    return;
+                }
+            }
+        }
     }
 
-    @Override
-    public boolean run(UUID targetPlayer, UUID fromPlayer, String reason, Date expirationDate, boolean isBan){
+    private boolean run(UUID targetPlayer, UUID fromPlayer, String reason, Date expirationDate, boolean isBan){
         if (authData == null){
             return false;
         }
@@ -76,7 +99,42 @@ public class LocalBAN implements BANInterface {
 
     @Override
     public boolean ban(UUID fromPlayer, UUID targetPlayer, String reason, Date expirationDate) {
-        return run(targetPlayer, fromPlayer, reason, expirationDate, true);
+        boolean run = run(targetPlayer, fromPlayer, reason, expirationDate, true);
+
+        String pass = "./" + plugin.getDataFolder() + "/LocalBanList.json";
+
+        String s = new Function().fileRead(pass);
+        List<LocalBANList> list = null;
+        if (s != null && s.length() > 0 && run){
+            list = new Gson().fromJson(s, new TypeToken<Collection<LocalBANList>>(){}.getType());
+        }
+
+        if (list == null){
+            list = new ArrayList<>();
+        }
+
+        BanEntry banEntry = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(new Function().UUID2UserName(targetPlayer));
+
+        Date maxDate = new Date();
+
+        LocalBANList banList;
+        try {
+            maxDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse("9999-12-31 23:59:59");
+        } catch (ParseException e) {
+            // e.printStackTrace();
+        }
+
+        if (maxDate.getTime() >= expirationDate.getTime()){
+            banList = new LocalBANList(targetPlayer, banEntry.getTarget(), banEntry.getCreated(), banEntry.getSource(), "forever", banEntry.getReason());
+        } else {
+            banList = new LocalBANList(targetPlayer, banEntry.getTarget(), banEntry.getCreated(), banEntry.getSource(), banEntry.getExpiration().toString(), banEntry.getReason());
+        }
+
+        list.add(banList);
+
+        new Function().fileWrite(pass, new GsonBuilder().setPrettyPrinting().create().toJson(list));
+
+        return run;
     }
 
     @Override
